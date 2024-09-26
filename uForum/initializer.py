@@ -14,6 +14,7 @@ def init():
         driver.delete_all_cookies()
         driver.refresh()
         driver.implicitly_wait(1)
+
         elmet = driver.find_element(By.XPATH, "/html/body/div[2]/div[1]/header/div/div[4]/button[2]")
         elmet.click()
         driver.implicitly_wait(1)
