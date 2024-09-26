@@ -3,47 +3,61 @@ import informations
 import initializer
 import autoFill
 
-
 if __name__ == '__main__':
-    # 读取命令行参数，固定参数为 -init, -help,中的一个或者 -new -fID + 字符串, -sName + 字符串 , -sID + 字符串, -t + 字符串
-    args = sys.argv
-    if args.__len__() == 2:
-        if args[1].lower() == "-help" or args[1].lower() == "-h":
-            print(informations.hInfo)
-            sys.exit(0)
-            pass
-        elif args[1].lower() == "-init":
-            print("开始初始化")
-            try:
-                if initializer.init():
-                    print("初始化完成")
-                    sys.exit(0)
-                    pass
-            except Exception:
-                print("初始化失败\n" + Exception)
-                sys.exit(0)
 
-            print("初始化失败")
-            sys.exit(0)
-            pass
-        else:
-            print(informations.argErrorInfo)
-            sys.exit(1)
-            pass
-    elif args.__len__() == 6:
-        if args[1].lower() == "-new":
-            forumID = args[2]
-            studentName = args[3]
-            studentID = args[4]
-            startTime = args[5]
-            autoFill.start(forumID, studentName, studentID, startTime)
-            sys.exit(0)
-            pass
-        else:
-            print(informations.argErrorInfo)
-            sys.exit(1)
-            pass
-    else:
+    args = sys.argv
+    if args.__len__() < 2:
         print(informations.argErrorInfo)
         sys.exit(1)
         pass
+
+    match args[1].lower():
+
+        case '-init':
+            print("开始初始化")
+            if initializer.init():
+                print("初始化完成")
+                sys.exit(0)
+            else:
+                print("初始化失败")
+                sys.exit(1)
+
+        case '-help':
+            print(informations.hInfo)
+            sys.exit(0)
+
+        case '-new':
+            if args.__len__() == 6:
+                target = args[2]
+                content = [args[3], args[4]]
+                execTime = args[5]
+                ######
+                if not autoFill.start(2, target, content, execTime):
+                    print("执行失败, 请检查参数")
+                    sys.exit(1)
+
+                print("执行完成")
+                sys.exit(0)
+            elif args[2].lower() == '-num':
+                if int(args[3]) > 0 and args.__len__() == 6 + int(args[3]):
+                    target = args[4]
+                    content = []
+                    for i in range(5, 5 + int(args[3])):
+                        content.append(args[i])
+                    execTime = args[5 + int(args[3])]
+                    #######
+                    if not autoFill.start(int(args[3]), target, content, execTime):
+                        print("执行失败, 请检查参数")
+                        sys.exit(1)
+
+                    print("执行完成")
+                    sys.exit(0)
+                else:
+                    print(informations.numErrorInfo)
+                    sys.exit(1)
+            else:
+                print(informations.argErrorInfo)
+
+        case _:
+            print(informations.argErrorInfo)
+            sys.exit(1)
